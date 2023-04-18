@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+    FILE *input_file, *output_file;
+    char *input_line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    input_file = fopen("input.txt", "r");
+    output_file = fopen("output.txt", "w");
+
+    if (input_file == NULL) {
+        printf("Error: Failed to open input file.\n");
+        return 1;
+    }
+
+    if (output_file == NULL) {
+        printf("Error: Failed to open output file.\n");
+        return 1;
+    }
+
+    while ((read = getline(&input_line, &len, input_file)) != -1) {
+        char *occurrence = strstr(input_line, "red");
+
+        while (occurrence != NULL) {
+            int index = occurrence - input_line;
+
+            
+            fwrite(input_line, sizeof(char), index, output_file);
+
+            
+            fwrite("blue", sizeof(char), 4, output_file);
+
+            
+            input_line = input_line + index + 3;
+
+            // find next occurrence of "red"
+            occurrence = strstr(input_line, "red");
+        }
+
+       
+        fwrite(input_line, sizeof(char), strlen(input_line), output_file);
+
+        // reset input_line and len for the next line
+        input_line = NULL;
+        len = 0;
+    }
+
+    fclose(input_file);
+    fclose(output_file);
+
+    return 0;
+}
