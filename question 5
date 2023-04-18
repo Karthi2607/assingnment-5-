@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+int main() {
+    char filename[100];
+    FILE *input_file, *output_file;
+    int count[26] = {0}; // initialize all elements to 0
+    char c;
+
+    printf("Enter the name of the input file: ");
+    scanf("%s", filename);
+
+    input_file = fopen(filename, "r");
+
+    if (input_file == NULL) {
+        printf("Error: Failed to open input file.\n");
+        return 1;
+    }
+
+    // Count occurrences of each letter
+    while ((c = fgetc(input_file)) != EOF) {
+        if (isalpha(c)) {
+            count[toupper(c) - 'A']++;
+        }
+    }
+
+    fclose(input_file);
+
+    output_file = fopen("statistics.txt", "w");
+
+    if (output_file == NULL) {
+        printf("Error: Failed to open output file.\n");
+        return 1;
+    }
+
+    // Write counts to output file
+    for (int i = 0; i < 26; i++) {
+        fprintf(output_file, "%c: %d\n", i + 'A', count[i]);
+    }
+
+    fclose(output_file);
+
+    printf("Statistics written to statistics.txt.\n");
+
+    return 0;
+}
